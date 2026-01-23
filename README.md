@@ -2,6 +2,32 @@
 
 This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation. It includes a complete demonstration of VLC media player with GUI interactions.
 
+## 📸 Screenshot Documentation
+
+**[→ View Complete Documentation with All Screenshots and Text Descriptions](SCREENSHOTS_WITH_DESCRIPTIONS.md)**
+
+All 21 screenshots are documented with detailed descriptions of visible GUI text. Below are key examples:
+
+### Shell Jobs Extension - All Features Working ✅
+
+![Shell Jobs Dialog](screenshots/shell_jobs/04_shell_jobs_dialog.png)
+
+**Visible Text**: Dialog titled "Shell Jobs" with three buttons: "Run Job", "Check Status", "Abort Job". Status shows "Click 'Run' when ready". VLC menu bar visible: Media, Playback, Audio, Video, Subtitle, Tools, View, Help.
+
+![Job Running](screenshots/shell_jobs/06_status_running.png)
+
+**Visible Text**: Status shows "RUNNING" with live ping output. Multiple lines visible: "PING localhost...", "64 bytes from localhost (127.0.0.1): icmp_seq=..." demonstrating real-time command execution.
+
+![Job Success](screenshots/shell_jobs/08_status_success.png)
+
+**Visible Text**: Status displays "SUCCESS" with complete output including ping statistics: "X packets transmitted, X received, 0% packet loss" and round-trip times "rtt min/avg/max/mdev = X.XXX/X.XXX/X.XXX/X.XXX ms".
+
+### VLC Media Player Interface
+
+![VLC Privacy Dialog](screenshots/vlc/02_vlc_privacy_dialog.png)
+
+**Visible Text**: "Privacy and Network Access Policy" dialog explaining "VLC media player does not collect personal data...". Checkbox "☑ Allow metadata network access" with "Continue" button.
+
 ## Overview
 
 This project sets up:
