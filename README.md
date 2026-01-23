@@ -2,6 +2,8 @@
 
 This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation.
 
+Supports both Ubuntu/Debian and Rocky Linux distributions.
+
 ## Overview
 
 This project sets up:
@@ -21,6 +23,8 @@ This project sets up:
 
 ## Installation
 
+### Ubuntu/Debian
+
 Install required packages:
 ```bash
 sudo apt-get update
@@ -29,11 +33,39 @@ pip3 install playwright
 python3 -m playwright install chromium
 ```
 
+### Rocky Linux
+
+Install required packages:
+```bash
+sudo dnf install -y epel-release
+sudo dnf install -y xorg-x11-server-Xvfb x11vnc fluxbox xterm python3 python3-pip git novnc
+pip3 install playwright
+python3 -m playwright install chromium
+python3 -m playwright install-deps chromium
+```
+
+### Docker (Rocky Linux)
+
+Build and run using Docker:
+```bash
+docker build -f Dockerfile.rocky -t vnc-rocky .
+docker run -p 6080:6080 vnc-rocky
+```
+
 ## Usage
+
+### Ubuntu/Debian
 
 Run the full test suite:
 ```bash
 ./run_test.sh
+```
+
+### Rocky Linux
+
+Run the full test suite:
+```bash
+./run_test_rocky.sh
 ```
 
 This will:
@@ -47,7 +79,9 @@ This will:
 
 ## Individual Scripts
 
-### setup_vnc.sh
+### Ubuntu/Debian Scripts
+
+#### setup_vnc.sh
 Starts the VNC server stack:
 - Xvfb on display :99
 - Fluxbox window manager
@@ -56,6 +90,21 @@ Starts the VNC server stack:
 
 ```bash
 ./setup_vnc.sh
+```
+
+Access noVNC at: http://localhost:6080/vnc.html?autoconnect=true
+
+### Rocky Linux Scripts
+
+#### setup_vnc_rocky.sh
+Starts the VNC server stack on Rocky Linux:
+- Xvfb on display :99
+- Fluxbox window manager
+- x11vnc on port 5999
+- noVNC on port 6080
+
+```bash
+./setup_vnc_rocky.sh
 ```
 
 Access noVNC at: http://localhost:6080/vnc.html?autoconnect=true
