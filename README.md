@@ -1,6 +1,6 @@
 # VNC Server with noVNC Test
 
-This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation.
+This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation. It includes a complete demonstration of VLC media player with GUI interactions.
 
 ## Overview
 
@@ -9,6 +9,7 @@ This project sets up:
 - An x11vnc server to share the X display
 - A noVNC web interface for browser-based VNC access
 - Automated verification using Playwright browser automation
+- VLC media player GUI interaction demonstration
 
 ## Requirements
 
@@ -31,7 +32,9 @@ python3 -m playwright install chromium
 
 ## Usage
 
-Run the full test suite:
+### VNC Server Test
+
+Run the basic VNC test suite:
 ```bash
 ./run_test.sh
 ```
@@ -44,6 +47,23 @@ This will:
 5. Run browser automation to verify setup
 6. Capture screenshots of the noVNC session
 7. Clean up all services
+
+### VLC GUI Interaction Demo
+
+Run the VLC media player demonstration with GUI interactions:
+```bash
+./run_vlc_demo.sh
+```
+
+This will:
+1. Install VLC media player (if not already installed)
+2. Start VNC server and noVNC
+3. Launch VLC in the virtual display
+4. Perform automated GUI interactions
+5. Capture screenshots at each interaction step
+6. Generate detailed interaction reports
+
+See [VLC_DEMO.md](VLC_DEMO.md) for detailed documentation of the VLC demonstration.
 
 ## Individual Scripts
 
@@ -72,10 +92,21 @@ python3 verify_novnc.py
 
 ## Output
 
+### Basic VNC Test
 Screenshots are saved in the `screenshots/` directory:
 - `novnc_initial.png` - Initial page load
 - `novnc_connected.png` - After VNC connection
 - `novnc_desktop.png` - Full desktop view
+
+### VLC Demo
+Screenshots are saved in the `screenshots/vlc/` directory:
+- `01_vlc_initial.png` - Initial VLC window
+- `02_vlc_media_menu.png` - Media menu dropdown
+- `03_vlc_tools_menu.png` - Tools menu dropdown  
+- `04_vlc_view_menu.png` - View menu dropdown
+- `05_vlc_playback_controls.png` - Playback control bar
+- `06_vlc_context_menu.png` - Right-click context menu
+- `07_vlc_final_view.png` - Final full view
 
 ## Architecture
 
