@@ -80,7 +80,7 @@ if [ -d /usr/share/novnc ]; then
     echo ""
     echo "Press Ctrl+C to stop all services..."
     
-    # Wait indefinitely
+    # Keep script running until interrupted
     wait
 else
     echo "noVNC not found at /usr/share/novnc"

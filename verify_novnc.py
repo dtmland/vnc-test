@@ -31,6 +31,10 @@ def wait_for_service(url, max_retries=30, delay=2):
 def verify_vnc_with_browser():
     """Use Playwright to verify noVNC is working and capture screenshots."""
     
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    screenshots_dir = os.path.join(script_dir, "screenshots")
+    
     novnc_url = "http://localhost:6080/vnc.html?autoconnect=true&reconnect=true&host=localhost&port=6080"
     
     print("\n" + "="*60)
@@ -59,8 +63,8 @@ def verify_vnc_with_browser():
             time.sleep(5)
             
             # Take initial screenshot
-            screenshot_path = "/home/runner/work/vnc-test/vnc-test/screenshots/novnc_initial.png"
-            os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)
+            os.makedirs(screenshots_dir, exist_ok=True)
+            screenshot_path = os.path.join(screenshots_dir, "novnc_initial.png")
             page.screenshot(path=screenshot_path)
             print(f"✓ Screenshot saved: {screenshot_path}")
             
@@ -69,7 +73,7 @@ def verify_vnc_with_browser():
             time.sleep(8)
             
             # Take screenshot of connected session
-            screenshot_path2 = "/home/runner/work/vnc-test/vnc-test/screenshots/novnc_connected.png"
+            screenshot_path2 = os.path.join(screenshots_dir, "novnc_connected.png")
             page.screenshot(path=screenshot_path2)
             print(f"✓ Screenshot saved: {screenshot_path2}")
             
@@ -79,7 +83,7 @@ def verify_vnc_with_browser():
                 print("✓ noVNC canvas element found - VNC display is active!")
                 
                 # Take a final screenshot focusing on the canvas area
-                screenshot_path3 = "/home/runner/work/vnc-test/vnc-test/screenshots/novnc_desktop.png"
+                screenshot_path3 = os.path.join(screenshots_dir, "novnc_desktop.png")
                 page.screenshot(path=screenshot_path3, full_page=True)
                 print(f"✓ Full page screenshot saved: {screenshot_path3}")
             else:
