@@ -1,0 +1,6 @@
+screenshots/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.log
