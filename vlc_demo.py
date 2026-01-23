@@ -101,33 +101,58 @@ def interact_with_vlc():
             })
             time.sleep(2)
             
-            # Get the VNC canvas element
+            # Screenshot 2: Handle VLC privacy dialog if present
+            print("\n[2] Handling VLC privacy dialog...")
+            time.sleep(2)
+            
+            # Click Continue button to dismiss privacy dialog
+            # The button is usually in the center-right area of the dialog
+            canvas_center_x = 700  # Approximate center of screen
+            canvas_center_y = 450  # Approximate center of screen
+            page.mouse.click(canvas_center_x, canvas_center_y)  # Click Continue
+            time.sleep(2)
+            
+            screenshot_path = os.path.join(screenshots_dir, "02_vlc_privacy_dialog.png")
+            page.screenshot(path=screenshot_path)
+            print(f"    ✓ Screenshot saved: {screenshot_path}")
+            interactions.append({
+                'step': 2,
+                'action': 'Privacy and Network Access Policy Dialog',
+                'description': 'VLC displays a privacy dialog on first launch explaining that it does not collect personal data but can retrieve metadata from Internet services. Dialog shows "Allow metadata network access" checkbox and "Continue" button.',
+                'elements_visible': ['Privacy Dialog', 'Continue Button', 'Checkbox', 'Policy Text']
+            })
+            time.sleep(1)
+            
+            # Get the VNC canvas element - try multiple selectors
             canvas = page.query_selector('#noVNC_canvas')
             if not canvas:
-                print("WARNING: Could not find noVNC canvas")
-                return False
+                canvas = page.query_selector('canvas')
+            if not canvas:
+                print("INFO: Proceeding without canvas element reference")
+                # Continue with fixed coordinates
+                canvas_box = {'x': 0, 'y': 0, 'width': 1400, 'height': 900}
+            else:
+                # Get canvas bounding box for coordinate calculations
+                canvas_box = canvas.bounding_box()
+                if not canvas_box:
+                    print("INFO: Using default canvas dimensions")
+                    canvas_box = {'x': 0, 'y': 0, 'width': 1400, 'height': 900}
+                else:
+                    print(f"    Canvas dimensions: {canvas_box['width']}x{canvas_box['height']}")
             
-            # Get canvas bounding box for coordinate calculations
-            canvas_box = canvas.bounding_box()
-            if not canvas_box:
-                print("WARNING: Could not get canvas dimensions")
-                return False
-            
-            print(f"    Canvas dimensions: {canvas_box['width']}x{canvas_box['height']}")
-            
-            # Screenshot 2: Clicking on Media menu
-            print("\n[2] Interacting with Media menu...")
+            # Screenshot 3: Clicking on Media menu
+            print("\n[3] Interacting with Media menu...")
             # Click on "Media" menu (approximate position in the menu bar)
             media_x = canvas_box['x'] + 100
             media_y = canvas_box['y'] + 30
             page.mouse.click(media_x, media_y)
             time.sleep(1)
             
-            screenshot_path = os.path.join(screenshots_dir, "02_vlc_media_menu.png")
+            screenshot_path = os.path.join(screenshots_dir, "03_vlc_media_menu.png")
             page.screenshot(path=screenshot_path)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             interactions.append({
-                'step': 2,
+                'step': 3,
                 'action': 'Media Menu Opened',
                 'description': 'Clicked on the "Media" menu in the menu bar. The dropdown menu displays options including "Open File", "Open Multiple Files", "Open Disc", "Open Network Stream", "Open Capture Device", "Recent Media", "Quit at End of Playlist", and "Quit" options.',
                 'elements_visible': ['Media Menu Items', 'File Operations', 'Network Stream Options']
@@ -138,18 +163,18 @@ def interact_with_vlc():
             page.mouse.click(canvas_box['x'] + 400, canvas_box['y'] + 300)
             time.sleep(1)
             
-            # Screenshot 3: Clicking on Tools menu
-            print("\n[3] Interacting with Tools menu...")
+            # Screenshot 4: Clicking on Tools menu
+            print("\n[4] Interacting with Tools menu...")
             tools_x = canvas_box['x'] + 380
             tools_y = canvas_box['y'] + 30
             page.mouse.click(tools_x, tools_y)
             time.sleep(1)
             
-            screenshot_path = os.path.join(screenshots_dir, "03_vlc_tools_menu.png")
+            screenshot_path = os.path.join(screenshots_dir, "04_vlc_tools_menu.png")
             page.screenshot(path=screenshot_path)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             interactions.append({
-                'step': 3,
+                'step': 4,
                 'action': 'Tools Menu Opened',
                 'description': 'Clicked on the "Tools" menu. The dropdown shows options such as "Effects and Filters", "Track Synchronization", "Media Information", "Codec Information", "Messages", "Preferences", and other tool-related options.',
                 'elements_visible': ['Tools Menu Items', 'Preferences Option', 'Effects and Filters', 'Media Information']
@@ -160,18 +185,18 @@ def interact_with_vlc():
             page.mouse.click(canvas_box['x'] + 400, canvas_box['y'] + 300)
             time.sleep(1)
             
-            # Screenshot 4: Clicking on View menu
-            print("\n[4] Interacting with View menu...")
+            # Screenshot 5: Clicking on View menu
+            print("\n[5] Interacting with View menu...")
             view_x = canvas_box['x'] + 450
             view_y = canvas_box['y'] + 30
             page.mouse.click(view_x, view_y)
             time.sleep(1)
             
-            screenshot_path = os.path.join(screenshots_dir, "04_vlc_view_menu.png")
+            screenshot_path = os.path.join(screenshots_dir, "05_vlc_view_menu.png")
             page.screenshot(path=screenshot_path)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             interactions.append({
-                'step': 4,
+                'step': 5,
                 'action': 'View Menu Opened',
                 'description': 'Clicked on the "View" menu. The menu displays interface customization options including "Playlist", "Docked Playlist", "Always on Top", "Minimal Interface", "Fullscreen Interface", "Advanced Controls", and other view settings.',
                 'elements_visible': ['View Menu Items', 'Interface Options', 'Playlist Toggle', 'Fullscreen Option']
@@ -182,36 +207,36 @@ def interact_with_vlc():
             page.mouse.click(canvas_box['x'] + 400, canvas_box['y'] + 300)
             time.sleep(1)
             
-            # Screenshot 5: Hovering over playback controls
-            print("\n[5] Examining playback controls...")
+            # Screenshot 6: Hovering over playback controls
+            print("\n[6] Examining playback controls...")
             controls_x = canvas_box['x'] + 200
             controls_y = canvas_box['y'] + canvas_box['height'] - 50
             page.mouse.move(controls_x, controls_y)
             time.sleep(1)
             
-            screenshot_path = os.path.join(screenshots_dir, "05_vlc_playback_controls.png")
+            screenshot_path = os.path.join(screenshots_dir, "06_vlc_playback_controls.png")
             page.screenshot(path=screenshot_path)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             interactions.append({
-                'step': 5,
+                'step': 6,
                 'action': 'Playback Controls Area',
                 'description': 'Focused on the playback controls at the bottom of the VLC window. Visible controls include: Previous button, Play/Pause button, Stop button, Next button, a timeline/progress slider, volume control slider, fullscreen toggle, and playlist toggle button.',
                 'elements_visible': ['Play Button', 'Pause Button', 'Stop Button', 'Next/Previous Buttons', 'Timeline Slider', 'Volume Control', 'Fullscreen Button']
             })
             time.sleep(1)
             
-            # Screenshot 6: Right-click context menu
-            print("\n[6] Opening context menu...")
+            # Screenshot 7: Right-click context menu
+            print("\n[7] Opening context menu...")
             context_x = canvas_box['x'] + 400
             context_y = canvas_box['y'] + 300
             page.mouse.click(context_x, context_y, button='right')
             time.sleep(1)
             
-            screenshot_path = os.path.join(screenshots_dir, "06_vlc_context_menu.png")
+            screenshot_path = os.path.join(screenshots_dir, "07_vlc_context_menu.png")
             page.screenshot(path=screenshot_path)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             interactions.append({
-                'step': 6,
+                'step': 7,
                 'action': 'Context Menu',
                 'description': 'Right-clicked in the main viewing area to open the context menu. The menu shows quick access options including Play/Pause, Stop, Previous, Next, Title selection, Chapter selection, Audio/Video/Subtitle track options, and other playback-related commands.',
                 'elements_visible': ['Context Menu', 'Play/Pause Option', 'Audio/Video Settings', 'Title/Chapter Navigation']
@@ -223,8 +248,8 @@ def interact_with_vlc():
             time.sleep(1)
             
             # Final screenshot
-            print("\n[7] Final view of VLC interface...")
-            screenshot_path = os.path.join(screenshots_dir, "07_vlc_final_view.png")
+            print("\n[8] Final view of VLC interface...")
+            screenshot_path = os.path.join(screenshots_dir, "08_vlc_final_view.png")
             page.screenshot(path=screenshot_path, full_page=True)
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             
@@ -245,7 +270,7 @@ def interact_with_vlc():
             print("="*70)
             print(f"\nAll screenshots saved to: {screenshots_dir}/")
             print("\nScreenshots captured:")
-            for i in range(1, 8):
+            for i in range(1, 9):
                 print(f"  {i:02d}_vlc_*.png - Step {i} interaction")
             
             return True

@@ -36,34 +36,39 @@ The demo performs the following interactions with VLC:
 - **Elements Visible**: Menu bar, playback controls, VLC cone logo, playlist area
 - **Screenshot**: `01_vlc_initial.png`
 
-### 2. Media Menu
+### 2. Privacy and Network Access Policy Dialog
+- **Action**: VLC displays privacy policy dialog on first launch
+- **Elements Visible**: Privacy dialog, Continue button, checkbox for metadata access
+- **Screenshot**: `02_vlc_privacy_dialog.png`
+
+### 3. Media Menu
 - **Action**: Click on "Media" menu
 - **Elements Visible**: Open File, Open Network Stream, Recent Media, Quit options
-- **Screenshot**: `02_vlc_media_menu.png`
+- **Screenshot**: `03_vlc_media_menu.png`
 
-### 3. Tools Menu  
+### 4. Tools Menu  
 - **Action**: Click on "Tools" menu
 - **Elements Visible**: Effects and Filters, Preferences, Media Information, Codec Information
-- **Screenshot**: `03_vlc_tools_menu.png`
+- **Screenshot**: `04_vlc_tools_menu.png`
 
-### 4. View Menu
+### 5. View Menu
 - **Action**: Click on "View" menu
 - **Elements Visible**: Playlist toggle, Interface options, Fullscreen toggle, Always on Top
-- **Screenshot**: `04_vlc_view_menu.png`
+- **Screenshot**: `05_vlc_view_menu.png`
 
-### 5. Playback Controls
+### 6. Playback Controls
 - **Action**: Examine playback control bar
 - **Elements Visible**: Play/Pause, Stop, Next/Previous, Timeline slider, Volume control, Fullscreen button
-- **Screenshot**: `05_vlc_playback_controls.png`
+- **Screenshot**: `06_vlc_playback_controls.png`
 
-### 6. Context Menu
+### 7. Context Menu
 - **Action**: Right-click in viewing area
 - **Elements Visible**: Playback commands, Audio/Video/Subtitle settings, Title/Chapter navigation
-- **Screenshot**: `06_vlc_context_menu.png`
+- **Screenshot**: `07_vlc_context_menu.png`
 
-### 7. Final View
+### 8. Final View
 - **Action**: Full application view
-- **Screenshot**: `07_vlc_final_view.png`
+- **Screenshot**: `08_vlc_final_view.png`
 
 ## Individual Scripts
 
@@ -90,12 +95,13 @@ This script:
 
 All screenshots are saved to `screenshots/vlc/`:
 - `01_vlc_initial.png` - Initial VLC window
-- `02_vlc_media_menu.png` - Media menu dropdown
-- `03_vlc_tools_menu.png` - Tools menu dropdown
-- `04_vlc_view_menu.png` - View menu dropdown
-- `05_vlc_playback_controls.png` - Playback control bar
-- `06_vlc_context_menu.png` - Right-click context menu
-- `07_vlc_final_view.png` - Final full view
+- `02_vlc_privacy_dialog.png` - Privacy and Network Access Policy dialog
+- `03_vlc_media_menu.png` - Media menu dropdown
+- `04_vlc_tools_menu.png` - Tools menu dropdown
+- `05_vlc_view_menu.png` - View menu dropdown
+- `06_vlc_playback_controls.png` - Playback control bar
+- `07_vlc_context_menu.png` - Right-click context menu
+- `08_vlc_final_view.png` - Final full view
 
 ## Requirements
 

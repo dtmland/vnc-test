@@ -101,12 +101,13 @@ Screenshots are saved in the `screenshots/` directory:
 ### VLC Demo
 Screenshots are saved in the `screenshots/vlc/` directory:
 - `01_vlc_initial.png` - Initial VLC window
-- `02_vlc_media_menu.png` - Media menu dropdown
-- `03_vlc_tools_menu.png` - Tools menu dropdown  
-- `04_vlc_view_menu.png` - View menu dropdown
-- `05_vlc_playback_controls.png` - Playback control bar
-- `06_vlc_context_menu.png` - Right-click context menu
-- `07_vlc_final_view.png` - Final full view
+- `02_vlc_privacy_dialog.png` - Privacy and Network Access Policy dialog
+- `03_vlc_media_menu.png` - Media menu dropdown
+- `04_vlc_tools_menu.png` - Tools menu dropdown  
+- `05_vlc_view_menu.png` - View menu dropdown
+- `06_vlc_playback_controls.png` - Playback control bar
+- `07_vlc_context_menu.png` - Right-click context menu
+- `08_vlc_final_view.png` - Final full view
 
 ## Architecture
 
