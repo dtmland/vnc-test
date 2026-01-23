@@ -103,8 +103,22 @@ def demonstrate_shell_jobs():
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             time.sleep(2)
             
-            # Dismiss privacy dialog
+            # Dismiss privacy dialog - try multiple approaches
             print("\n[2] Dismissing privacy dialog...")
+            
+            # Approach 1: Press Enter key (activates default button)
+            print("    Trying Enter key...")
+            page.keyboard.press('Enter')
+            time.sleep(2)
+            
+            # Approach 2: Press Tab then Enter (in case Enter didn't work)
+            print("    Trying Tab+Enter...")
+            page.keyboard.press('Tab')
+            time.sleep(0.5)
+            page.keyboard.press('Enter')
+            time.sleep(2)
+            
+            # Approach 3: Click at Continue button location
             canvas = page.query_selector('#noVNC_canvas')
             if not canvas:
                 canvas = page.query_selector('canvas')
@@ -112,16 +126,17 @@ def demonstrate_shell_jobs():
             if canvas:
                 temp_box = canvas.bounding_box()
                 if temp_box:
-                    continue_x = temp_box['x'] + temp_box['width'] * 0.7
-                    continue_y = temp_box['y'] + temp_box['height'] * 0.55
-                else:
-                    continue_x = 700
-                    continue_y = 450
-            else:
-                continue_x = 700
-                continue_y = 450
-                
-            page.mouse.click(continue_x, continue_y)
+                    # Continue button is at bottom right of dialog
+                    continue_x = temp_box['x'] + temp_box['width'] * 0.72
+                    continue_y = temp_box['y'] + temp_box['height'] * 0.62
+                    print(f"    Clicking Continue at ({continue_x:.0f}, {continue_y:.0f})")
+                    page.mouse.click(continue_x, continue_y)
+            time.sleep(3)  # Give time for dialog to close
+            
+            # Verify dialog is dismissed by taking another screenshot
+            screenshot_path = os.path.join(screenshots_dir, "01b_after_continue.png")
+            page.screenshot(path=screenshot_path)
+            print(f"    ✓ Screenshot after dismissing dialog: {screenshot_path}")
             time.sleep(2)
             
             # Get canvas coordinates
