@@ -52,6 +52,13 @@ docker build -f Dockerfile.rocky -t vnc-rocky .
 docker run -p 6080:6080 vnc-rocky
 ```
 
+Or using docker-compose:
+```bash
+docker-compose -f docker-compose.rocky.yml up
+```
+
+**Note**: If building in a network-restricted environment, you may need to configure DNS or use a proxy.
+
 ## Usage
 
 ### Ubuntu/Debian
@@ -151,6 +158,17 @@ Screenshots are saved in the `screenshots/` directory:
 │  (Virtual)  │
 └─────────────┘
 ```
+
+## Differences Between Ubuntu and Rocky Linux Versions
+
+| Aspect | Ubuntu/Debian | Rocky Linux |
+|--------|---------------|-------------|
+| Package Manager | `apt-get` | `dnf` |
+| EPEL Repository | Not needed | Required for additional packages |
+| Xvfb Package | `xvfb` | `xorg-x11-server-Xvfb` |
+| Playwright Deps | Auto-installed | Requires `playwright install-deps` |
+| Scripts | `setup_vnc.sh`, `run_test.sh` | `setup_vnc_rocky.sh`, `run_test_rocky.sh` |
+| Terminal Title | "VNC Test Terminal" | "VNC Test Terminal - Rocky Linux" |
 
 ## Troubleshooting
 
