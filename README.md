@@ -10,6 +10,7 @@ This project sets up:
 - A noVNC web interface for browser-based VNC access
 - Automated verification using Playwright browser automation
 - VLC media player GUI interaction demonstration
+- VLC Shell Jobs extension demonstration
 
 ## Requirements
 
@@ -65,6 +66,27 @@ This will:
 
 See [VLC_DEMO.md](VLC_DEMO.md) for detailed documentation of the VLC demonstration.
 
+### VLC Shell Jobs Extension Demo
+
+Run the VLC Shell Jobs extension demonstration:
+```bash
+./run_shell_jobs_demo.sh
+```
+
+This will:
+1. Install VLC (if needed) and Shell Jobs extension
+2. Start VNC server and noVNC
+3. Launch VLC with the extension
+4. Demonstrate all extension features:
+   - Run Job button
+   - Check Status button (RUNNING state)
+   - Check Status button (SUCCESS state)
+   - Abort Job button
+5. Capture screenshots of each operation
+6. Show different status text outputs
+
+See [SHELL_JOBS_DEMO.md](SHELL_JOBS_DEMO.md) for detailed documentation.
+
 ## Individual Scripts
 
 ### setup_vnc.sh
@@ -108,6 +130,21 @@ Screenshots are saved in the `screenshots/vlc/` directory:
 - `06_vlc_playback_controls.png` - Playback control bar
 - `07_vlc_context_menu.png` - Right-click context menu
 - `08_vlc_final_view.png` - Final full view
+
+### Shell Jobs Extension Demo
+Screenshots are saved in the `screenshots/shell_jobs/` directory:
+- `01_vlc_initial.png` - VLC launch with privacy dialog
+- `02_vlc_ready.png` - VLC main window ready
+- `03_view_menu.png` - View menu with Shell Jobs option
+- `04_shell_jobs_dialog.png` - Shell Jobs dialog with 3 buttons
+- `05_job_started.png` - After clicking "Run Job"
+- `06_status_running.png` - Status RUNNING with output
+- `07_status_running_more.png` - More accumulated output
+- `08_status_success.png` - Status SUCCESS with complete output
+- `09_second_job_started.png` - Second job started
+- `10_job_aborted.png` - After clicking "Abort Job"
+- `11_status_after_abort.png` - Status after termination
+- `12_final_view.png` - Final extension state
 
 ## Architecture
 
