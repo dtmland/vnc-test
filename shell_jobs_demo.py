@@ -103,40 +103,61 @@ def demonstrate_shell_jobs():
             print(f"    ✓ Screenshot saved: {screenshot_path}")
             time.sleep(2)
             
-            # Dismiss privacy dialog - try multiple approaches
+            # Dismiss privacy dialog - use multiple approaches aggressively
             print("\n[2] Dismissing privacy dialog...")
             
-            # Approach 1: Press Enter key (activates default button)
-            print("    Trying Enter key...")
-            page.keyboard.press('Enter')
-            time.sleep(2)
-            
-            # Approach 2: Press Tab then Enter (in case Enter didn't work)
-            print("    Trying Tab+Enter...")
-            page.keyboard.press('Tab')
-            time.sleep(0.5)
-            page.keyboard.press('Enter')
-            time.sleep(2)
-            
-            # Approach 3: Click at Continue button location
+            # Get canvas for clicking
             canvas = page.query_selector('#noVNC_canvas')
             if not canvas:
                 canvas = page.query_selector('canvas')
             
+            # Approach 1: Click the Continue button directly at its actual position
+            # Based on the screenshot, Continue button is at bottom-right of the dialog
             if canvas:
                 temp_box = canvas.bounding_box()
                 if temp_box:
-                    # Continue button is at bottom right of dialog
-                    continue_x = temp_box['x'] + temp_box['width'] * 0.72
-                    continue_y = temp_box['y'] + temp_box['height'] * 0.62
-                    print(f"    Clicking Continue at ({continue_x:.0f}, {continue_y:.0f})")
+                    # Continue button coordinates - dialog is centered, button at bottom right
+                    # Dialog appears to be ~420px wide, button at right edge
+                    # Dialog center is around 640, so button is around 850
+                    continue_x = temp_box['x'] + 850
+                    continue_y = temp_box['y'] + 480
+                    print(f"    Attempt 1: Clicking Continue button at ({continue_x:.0f}, {continue_y:.0f})")
                     page.mouse.click(continue_x, continue_y)
-            time.sleep(3)  # Give time for dialog to close
+                    time.sleep(2)
+            
+            # Approach 2: Try Escape key to close dialog
+            print("    Attempt 2: Pressing Escape key...")
+            page.keyboard.press('Escape')
+            time.sleep(1)
+            
+            # Approach 3: Press Enter (default button)
+            print("    Attempt 3: Pressing Enter key...")
+            page.keyboard.press('Enter')
+            time.sleep(2)
+            
+            # Approach 4: Click again at a slightly different position
+            if canvas:
+                temp_box = canvas.bounding_box()
+                if temp_box:
+                    # Try clicking at the checkbox and then Continue
+                    continue_x = temp_box['x'] + 920  # Further right
+                    continue_y = temp_box['y'] + 445  # Continue button Y position
+                    print(f"    Attempt 4: Clicking at ({continue_x:.0f}, {continue_y:.0f})")
+                    page.mouse.click(continue_x, continue_y)
+                    time.sleep(2)
+            
+            # Approach 5: Multiple Enter presses
+            print("    Attempt 5: Multiple Enter presses...")
+            for i in range(3):
+                page.keyboard.press('Enter')
+                time.sleep(0.5)
+            
+            time.sleep(3)  # Give extra time for dialog to close
             
             # Verify dialog is dismissed by taking another screenshot
             screenshot_path = os.path.join(screenshots_dir, "01b_after_continue.png")
             page.screenshot(path=screenshot_path)
-            print(f"    ✓ Screenshot after dismissing dialog: {screenshot_path}")
+            print(f"    ✓ Verification screenshot: {screenshot_path}")
             time.sleep(2)
             
             # Get canvas coordinates
