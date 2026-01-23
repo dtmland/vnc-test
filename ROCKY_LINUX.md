@@ -96,7 +96,13 @@ Check if noVNC is installed:
 ls -la /usr/share/novnc
 ```
 
-The path should be `/usr/share/novnc` on both Ubuntu and Rocky Linux.
+On most distributions including Ubuntu and Rocky Linux, noVNC is typically installed to `/usr/share/novnc`. However, if you installed from source or a different package, verify the path:
+```bash
+# Find noVNC installation
+find /usr -name "novnc_proxy" 2>/dev/null
+```
+
+Update the `setup_vnc_rocky.sh` script if your installation path differs.
 
 ## Verification
 
