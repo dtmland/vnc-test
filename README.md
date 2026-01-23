@@ -1,6 +1,6 @@
 # VNC Server with noVNC Test
 
-This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation.
+This repository demonstrates setting up a VNC server with noVNC web interface and verifying the setup using browser automation. It includes a complete demonstration of VLC media player with GUI interactions.
 
 ## Overview
 
@@ -9,6 +9,8 @@ This project sets up:
 - An x11vnc server to share the X display
 - A noVNC web interface for browser-based VNC access
 - Automated verification using Playwright browser automation
+- VLC media player GUI interaction demonstration
+- VLC Shell Jobs extension demonstration
 
 ## Requirements
 
@@ -31,7 +33,9 @@ python3 -m playwright install chromium
 
 ## Usage
 
-Run the full test suite:
+### VNC Server Test
+
+Run the basic VNC test suite:
 ```bash
 ./run_test.sh
 ```
@@ -44,6 +48,44 @@ This will:
 5. Run browser automation to verify setup
 6. Capture screenshots of the noVNC session
 7. Clean up all services
+
+### VLC GUI Interaction Demo
+
+Run the VLC media player demonstration with GUI interactions:
+```bash
+./run_vlc_demo.sh
+```
+
+This will:
+1. Install VLC media player (if not already installed)
+2. Start VNC server and noVNC
+3. Launch VLC in the virtual display
+4. Perform automated GUI interactions
+5. Capture screenshots at each interaction step
+6. Generate detailed interaction reports
+
+See [VLC_DEMO.md](VLC_DEMO.md) for detailed documentation of the VLC demonstration.
+
+### VLC Shell Jobs Extension Demo
+
+Run the VLC Shell Jobs extension demonstration:
+```bash
+./run_shell_jobs_demo.sh
+```
+
+This will:
+1. Install VLC (if needed) and Shell Jobs extension
+2. Start VNC server and noVNC
+3. Launch VLC with the extension
+4. Demonstrate all extension features:
+   - Run Job button
+   - Check Status button (RUNNING state)
+   - Check Status button (SUCCESS state)
+   - Abort Job button
+5. Capture screenshots of each operation
+6. Show different status text outputs
+
+See [SHELL_JOBS_DEMO.md](SHELL_JOBS_DEMO.md) for detailed documentation.
 
 ## Individual Scripts
 
@@ -72,10 +114,37 @@ python3 verify_novnc.py
 
 ## Output
 
+### Basic VNC Test
 Screenshots are saved in the `screenshots/` directory:
 - `novnc_initial.png` - Initial page load
 - `novnc_connected.png` - After VNC connection
 - `novnc_desktop.png` - Full desktop view
+
+### VLC Demo
+Screenshots are saved in the `screenshots/vlc/` directory:
+- `01_vlc_initial.png` - Initial VLC window
+- `02_vlc_privacy_dialog.png` - Privacy and Network Access Policy dialog
+- `03_vlc_media_menu.png` - Media menu dropdown
+- `04_vlc_tools_menu.png` - Tools menu dropdown  
+- `05_vlc_view_menu.png` - View menu dropdown
+- `06_vlc_playback_controls.png` - Playback control bar
+- `07_vlc_context_menu.png` - Right-click context menu
+- `08_vlc_final_view.png` - Final full view
+
+### Shell Jobs Extension Demo
+Screenshots are saved in the `screenshots/shell_jobs/` directory:
+- `01_vlc_initial.png` - VLC launch with privacy dialog
+- `02_vlc_ready.png` - VLC main window ready
+- `03_view_menu.png` - View menu with Shell Jobs option
+- `04_shell_jobs_dialog.png` - Shell Jobs dialog with 3 buttons
+- `05_job_started.png` - After clicking "Run Job"
+- `06_status_running.png` - Status RUNNING with output
+- `07_status_running_more.png` - More accumulated output
+- `08_status_success.png` - Status SUCCESS with complete output
+- `09_second_job_started.png` - Second job started
+- `10_job_aborted.png` - After clicking "Abort Job"
+- `11_status_after_abort.png` - Status after termination
+- `12_final_view.png` - Final extension state
 
 ## Architecture
 

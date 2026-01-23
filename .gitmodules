@@ -1,0 +1,3 @@
+[submodule "vlc-shell-jobs"]
+	path = vlc-shell-jobs
+	url = https://github.com/dtmland/vlc-shell-jobs.git
