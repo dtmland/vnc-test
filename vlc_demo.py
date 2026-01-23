@@ -10,12 +10,15 @@ import os
 import sys
 import time
 import subprocess
+import urllib.request
+import urllib.error
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+
+# Default canvas dimensions for fallback
+DEFAULT_CANVAS_BOX = {'x': 0, 'y': 0, 'width': 1400, 'height': 900}
 
 def wait_for_service(url, max_retries=30, delay=2):
     """Wait for a service to become available."""
-    import urllib.request
-    import urllib.error
     
     for i in range(max_retries):
         try:
@@ -105,11 +108,27 @@ def interact_with_vlc():
             print("\n[2] Handling VLC privacy dialog...")
             time.sleep(2)
             
-            # Click Continue button to dismiss privacy dialog
-            # The button is usually in the center-right area of the dialog
-            canvas_center_x = 700  # Approximate center of screen
-            canvas_center_y = 450  # Approximate center of screen
-            page.mouse.click(canvas_center_x, canvas_center_y)  # Click Continue
+            # Get canvas box for coordinate calculations
+            canvas = page.query_selector('#noVNC_canvas')
+            if not canvas:
+                canvas = page.query_selector('canvas')
+            
+            if canvas:
+                temp_box = canvas.bounding_box()
+                if temp_box:
+                    # Click Continue button using canvas-relative coordinates
+                    continue_x = temp_box['x'] + temp_box['width'] * 0.7
+                    continue_y = temp_box['y'] + temp_box['height'] * 0.55
+                else:
+                    # Fallback to fixed coordinates
+                    continue_x = 700
+                    continue_y = 450
+            else:
+                # Fallback to fixed coordinates
+                continue_x = 700
+                continue_y = 450
+                
+            page.mouse.click(continue_x, continue_y)  # Click Continue
             time.sleep(2)
             
             screenshot_path = os.path.join(screenshots_dir, "02_vlc_privacy_dialog.png")
@@ -129,14 +148,14 @@ def interact_with_vlc():
                 canvas = page.query_selector('canvas')
             if not canvas:
                 print("INFO: Proceeding without canvas element reference")
-                # Continue with fixed coordinates
-                canvas_box = {'x': 0, 'y': 0, 'width': 1400, 'height': 900}
+                # Continue with default coordinates
+                canvas_box = DEFAULT_CANVAS_BOX.copy()
             else:
                 # Get canvas bounding box for coordinate calculations
                 canvas_box = canvas.bounding_box()
                 if not canvas_box:
                     print("INFO: Using default canvas dimensions")
-                    canvas_box = {'x': 0, 'y': 0, 'width': 1400, 'height': 900}
+                    canvas_box = DEFAULT_CANVAS_BOX.copy()
                 else:
                     print(f"    Canvas dimensions: {canvas_box['width']}x{canvas_box['height']}")
             
