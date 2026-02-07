@@ -13,7 +13,9 @@ RESOLUTION="1280x1024x24"
 for tool in xdotool wmctrl scrot vlc; do
     if ! command -v "$tool" &>/dev/null; then
         echo "Installing $tool..."
-        sudo apt-get install -y -qq "$tool" 2>/dev/null || true
+        if ! sudo apt-get install -y -qq "$tool" 2>/dev/null; then
+            echo "WARNING: Failed to install $tool"
+        fi
     fi
 done
 

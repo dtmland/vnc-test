@@ -294,7 +294,9 @@ def main():
     print("    - Preferences                 Ctrl+P")
 
     # Navigate to "Plugins and Extensions"
-    # VLC 3.0 Tools menu order (Down key positions, separators are skipped):
+    # VLC 3.0.20 Tools menu order (Down key positions, separators are skipped).
+    # NOTE: Menu item count may vary across VLC versions; fallback logic below
+    # tries adjacent positions if the primary count does not match.
     #   0: Effects and Filters    4: VLM               7: Plugins and Extensions
     #   1: Track Synchronization  5: Program Guide      8: Toolbars Editor
     #   2: Media Information      6: Messages           9: Preferences
@@ -342,7 +344,7 @@ def main():
         )
     else:
         # Fallback: try different Down counts (menu may vary by VLC version)
-        print("  Not found with 7 Downs. Trying 6 and 8...")
+        print("  Not found with 7 Down presses. Trying 6 and 8...")
         for fallback_count in [6, 8]:
             vlc_window = find_window_by_name("VLC media player")
             if not vlc_window:
