@@ -7,7 +7,15 @@ set -e
 DISPLAY_NUM=99
 VNC_PORT=5999
 NOVNC_PORT=6080
-RESOLUTION="1280x720x24"
+RESOLUTION="1280x1024x24"
+
+# Ensure desktop automation tools are available
+for tool in xdotool wmctrl scrot vlc; do
+    if ! command -v "$tool" &>/dev/null; then
+        echo "Installing $tool..."
+        sudo apt-get install -y -qq "$tool" 2>/dev/null || true
+    fi
+done
 
 # Function to cleanup on exit
 cleanup() {
