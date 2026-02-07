@@ -286,21 +286,22 @@ def main():
     print("    - Track Synchronization")
     print("    - Media Information           Ctrl+I")
     print("    - Codec Information")
+    print("    - VLM")
+    print("    - Program Guide")
     print("    - Messages                    Ctrl+M")
-    print("    - Preferences                 Ctrl+P")
     print("    - Plugins and Extensions      <- TARGET")
-    print("    - Customize Interface")
-    print("    - Quit                        Ctrl+Q")
+    print("    - Toolbars Editor")
+    print("    - Preferences                 Ctrl+P")
 
     # Navigate to "Plugins and Extensions"
     # VLC 3.0 Tools menu order (Down key positions, separators are skipped):
-    #   0: Effects and Filters    4: VLM               8: Plugins and Extensions
-    #   1: Track Synchronization  5: Program Guide      9: Customize Interface
-    #   2: Media Information      6: Messages           10: (Quit)
-    #   3: Codec Information      7: Preferences
-    # We need 8 Down presses to reach "Plugins and Extensions"
-    print("\n  Navigating down 8 items to 'Plugins and Extensions'...")
-    for i in range(8):
+    #   0: Effects and Filters    4: VLM               7: Plugins and Extensions
+    #   1: Track Synchronization  5: Program Guide      8: Toolbars Editor
+    #   2: Media Information      6: Messages           9: Preferences
+    #   3: Codec Information                           10+: wraps around
+    # We need 7 Down presses to reach "Plugins and Extensions"
+    print("\n  Navigating down 7 items to 'Plugins and Extensions'...")
+    for i in range(7):
         send_key("Down")
         time.sleep(0.15)
 
@@ -341,8 +342,8 @@ def main():
         )
     else:
         # Fallback: try different Down counts (menu may vary by VLC version)
-        print("  Not found with 8 Downs. Trying 7 and 9...")
-        for fallback_count in [7, 9]:
+        print("  Not found with 7 Downs. Trying 6 and 8...")
+        for fallback_count in [6, 8]:
             vlc_window = find_window_by_name("VLC media player")
             if not vlc_window:
                 break
