@@ -19,11 +19,17 @@ VNC_SCRIPT_PID=$!
 echo "Waiting for services to initialize..."
 sleep 10
 
-# Run verification
+# Run browser automation verification
 echo ""
 echo "Running browser automation verification..."
 python3 "$SCRIPT_DIR/verify_novnc.py"
 VERIFY_EXIT=$?
+
+# Run desktop automation (VLC + xdotool + scrot)
+echo ""
+echo "Running desktop automation (VLC with xdotool/scrot)..."
+python3 "$SCRIPT_DIR/desktop_automation.py"
+DESKTOP_EXIT=$?
 
 # Cleanup
 echo ""
@@ -31,8 +37,8 @@ echo "Cleaning up VNC services..."
 kill $VNC_SCRIPT_PID 2>/dev/null || true
 sleep 2
 
-# Display screenshots if verification was successful
-if [ $VERIFY_EXIT -eq 0 ]; then
+# Display screenshots
+if [ $VERIFY_EXIT -eq 0 ] || [ $DESKTOP_EXIT -eq 0 ]; then
     echo ""
     echo "======================================"
     echo "SUCCESS! VNC Server is Working"
