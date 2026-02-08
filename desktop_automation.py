@@ -6,8 +6,11 @@ This script:
 1. Launches VLC media player on the virtual X display
 2. Dismisses VLC's initial pop-up dialog (Privacy and Network Access Policy)
 3. Navigates to and opens the VLC Plugins and Extensions dialog
-4. Takes native X11 screenshots at each step using scrot
-5. Describes what is visible in each screenshot (dialog text, menus, etc.)
+4. Opens the Shell Jobs extension (from https://github.com/dtmland/vlc-shell-jobs)
+5. Clicks 'Run Job', waits 3s, clicks 'Check Status' and takes a screenshot
+6. Waits 20s, clicks 'Check Status' again, describes final job status
+7. Takes native X11 screenshots at each step using scrot
+8. Describes what is visible in each screenshot (dialog text, menus, etc.)
 """
 
 import os
@@ -384,9 +387,262 @@ def main():
             print("  \u2717 Could not open Extensions dialog")
             take_screenshot("07_extensions_not_found", "Extensions dialog not found.")
 
-    # == STEP 6: Final Summary ==
+    # == STEP 6: Open View > Shell Jobs ==
     print("\n" + "=" * 60)
-    print("STEP 6: Final Summary")
+    print("STEP 6: Opening View > Shell Jobs Extension")
+    print("=" * 60)
+
+    # Close any open dialogs first (Plugins dialog from Step 4/5)
+    for dialog_name in ["Plugins", "Extensions", "Addons"]:
+        dialog_wids = find_window_by_name(dialog_name)
+        for dwid in dialog_wids:
+            run_cmd(f"xdotool windowclose {dwid}")
+            time.sleep(0.3)
+
+    vlc_window = find_window_by_name("VLC media player")
+    if not vlc_window:
+        print("  \u2717 VLC main window not found!")
+        take_screenshot("09_vlc_not_found", "VLC window not found.")
+    else:
+        focus_window(vlc_window[0])
+        time.sleep(0.5)
+
+        # Navigate to View menu: Alt -> 6 Right (Media->Playback->Audio->Video->Tools->View)
+        # Then navigate down to find "Shell Jobs" extension item.
+        # VLC View menu typically contains: Playlist, Docked Playlist (checkbox),
+        # Minimal View, Fullscreen Interface, Advanced Controls, Status Bar,
+        # (separator), then Lua extensions like "Shell Jobs" and "VLSub".
+        #
+        # Strategy: Try keyboard navigation first, then fall back to mouse clicks.
+        # We try multiple Down counts to find the Shell Jobs item.
+
+        shell_jobs_found = False
+
+        # Method 1: Keyboard navigation through View menu
+        # Try each Down position looking for "Job Runner" dialog to appear
+        print("  Trying keyboard navigation through View menu...")
+        for downs in range(12):
+            vlc_window = find_window_by_name("VLC media player")
+            if not vlc_window:
+                break
+
+            focus_window(vlc_window[0])
+            time.sleep(0.3)
+
+            send_key("Alt_L")
+            time.sleep(0.5)
+            for _ in range(6):
+                send_key("Right")
+                time.sleep(0.06)
+            send_key("Down")
+            time.sleep(0.3)
+            for _ in range(downs):
+                send_key("Down")
+                time.sleep(0.06)
+            send_key("Return")
+            time.sleep(2)
+
+            job_wid = find_window_by_name("Job Runner")
+            if job_wid:
+                print(f"  \u2713 Shell Jobs extension opened at View menu position {downs}!")
+                shell_jobs_found = True
+                break
+
+            # Close any About dialog that may have appeared (Help menu wrap-around)
+            about_wids = find_window_by_name("About")
+            for awid in about_wids:
+                run_cmd(f"xdotool windowclose {awid}")
+                time.sleep(0.3)
+
+        # Method 2: Try via Tools > Plugins, then activate from there
+        if not shell_jobs_found:
+            print("  Keyboard navigation didn't find Shell Jobs.")
+            print("  Trying alternative: mouse click on View menu items...")
+
+            vlc_window = find_window_by_name("VLC media player")
+            if vlc_window:
+                focus_window(vlc_window[0])
+                time.sleep(0.3)
+
+                # Get VLC window geometry for mouse positioning
+                geo = run_cmd(f"xdotool getwindowgeometry --shell {vlc_window[0]}")
+                wx, wy = 0, 0
+                for line in geo.stdout.strip().split('\n'):
+                    if line.startswith('X='): wx = int(line.split('=')[1])
+                    elif line.startswith('Y='): wy = int(line.split('=')[1])
+
+                # Click on View menu text in menu bar
+                # Menu bar items: Media|Playback|Audio|Video|Tools|View|Help
+                # Approximate x offsets from window left edge
+                view_x = wx + 315
+                view_y = wy + 12
+
+                run_cmd(f"xdotool mousemove --sync {view_x} {view_y}")
+                time.sleep(0.2)
+                run_cmd("xdotool click 1")
+                time.sleep(0.5)
+
+                # Click each dropdown position looking for Shell Jobs
+                for item_offset in range(0, 260, 22):
+                    item_y = view_y + 28 + item_offset
+                    run_cmd(f"xdotool mousemove --sync {view_x} {item_y}")
+                    time.sleep(0.2)
+                    run_cmd("xdotool click 1")
+                    time.sleep(2)
+
+                    job_wid = find_window_by_name("Job Runner")
+                    if job_wid:
+                        print(f"  \u2713 Shell Jobs found via mouse click at offset {item_offset}!")
+                        shell_jobs_found = True
+                        break
+
+                    # Re-open View menu if it closed
+                    run_cmd(f"xdotool mousemove --sync {view_x} {view_y}")
+                    time.sleep(0.2)
+                    run_cmd("xdotool click 1")
+                    time.sleep(0.3)
+
+                # Close menu if still open
+                send_key("Escape")
+                time.sleep(0.2)
+
+        if shell_jobs_found:
+            job_wid = find_window_by_name("Job Runner")
+            if job_wid:
+                focus_window(job_wid[0])
+                time.sleep(0.5)
+                name_result = run_cmd(f"xdotool getwindowname {job_wid[0]}")
+                job_title = name_result.stdout.strip()
+                print(f"\n  Window title: '{job_title}'")
+                print("  Description: The Shell Jobs extension dialog is open.")
+                print("  It contains:")
+                print("    - 'Run Job' button: starts a shell command (ping localhost)")
+                print("    - 'Check Status' button: checks the current job status")
+                print("    - 'Abort Job' button: aborts the running job")
+                print("    - HTML area: displays job status and output")
+                print("    - Initial text: \"Click 'Run' when ready. Click 'Refresh' to check run status\"")
+
+            take_screenshot(
+                "09_shell_jobs_opened",
+                "VLC Shell Jobs extension dialog is open. Shows 'Run Job', "
+                "'Check Status', and 'Abort Job' buttons with an HTML status area."
+            )
+        else:
+            print("  \u2717 Could not open Shell Jobs extension")
+            take_screenshot("09_shell_jobs_not_found", "Shell Jobs extension could not be opened.")
+
+    # == STEP 7: Run Job and Check Status ==
+    print("\n" + "=" * 60)
+    print("STEP 7: Run Job, Wait 3s, Check Status")
+    print("=" * 60)
+
+    job_wid = find_window_by_name("Job Runner")
+    if job_wid:
+        focus_window(job_wid[0])
+        time.sleep(0.5)
+
+        # Click 'Run Job' button - it's the first button in the dialog
+        # Use Tab to navigate to it and press Enter, or use mouse
+        print("  Clicking 'Run Job' button...")
+        send_key("Tab")
+        time.sleep(0.1)
+        send_key("Return")
+        time.sleep(0.5)
+
+        # If Tab+Enter didn't work, try Alt+R (mnemonic) or mouse click
+        # The Run Job button is at grid position (1,1) in the dialog
+        # Try using xdotool to search for the button and click it
+        geo = run_cmd(f"xdotool getwindowgeometry --shell {job_wid[0]}")
+        jx, jy, jw, jh = 0, 0, 0, 0
+        for line in geo.stdout.strip().split('\n'):
+            if line.startswith('X='): jx = int(line.split('=')[1])
+            elif line.startswith('Y='): jy = int(line.split('=')[1])
+            elif line.startswith('WIDTH='): jw = int(line.split('=')[1])
+            elif line.startswith('HEIGHT='): jh = int(line.split('=')[1])
+
+        # Run Job button is approximately at top-left of dialog
+        run_btn_x = jx + 60
+        run_btn_y = jy + 25
+        run_cmd(f"xdotool mousemove --sync {run_btn_x} {run_btn_y}")
+        time.sleep(0.2)
+        run_cmd("xdotool click 1")
+        time.sleep(0.5)
+        print("  Job started!")
+
+        # Wait 3 seconds
+        print("  Waiting 3 seconds...")
+        time.sleep(3)
+
+        # Click 'Check Status' button
+        print("  Clicking 'Check Status' button...")
+        check_btn_x = jx + 180
+        check_btn_y = jy + 25
+        run_cmd(f"xdotool mousemove --sync {check_btn_x} {check_btn_y}")
+        time.sleep(0.2)
+        run_cmd("xdotool click 1")
+        time.sleep(1)
+
+        take_screenshot(
+            "10_job_running_first_check",
+            "Shell Jobs after clicking 'Run Job' and first 'Check Status'. "
+            "The job status should show the ping command is running with elapsed time."
+        )
+
+        print("  Description: After clicking 'Run Job' and waiting 3 seconds,")
+        print("  the 'Check Status' button was pressed. The HTML area should")
+        print("  display the job status showing the ping command is running.")
+        print("  The job runs: 'ping -c 5 localhost;ping -c 5 localhost;ping -c 5 localhost'")
+    else:
+        print("  \u2717 Job Runner dialog not found, skipping Run Job")
+        take_screenshot("10_no_job_runner", "Job Runner dialog not found.")
+
+    # == STEP 8: Wait 20s and Check Status Again ==
+    print("\n" + "=" * 60)
+    print("STEP 8: Wait 20 Seconds, Then Check Status Again")
+    print("=" * 60)
+
+    job_wid = find_window_by_name("Job Runner")
+    if job_wid:
+        print("  Waiting 20 seconds for job to complete...")
+        time.sleep(20)
+
+        focus_window(job_wid[0])
+        time.sleep(0.5)
+
+        # Click 'Check Status' button again
+        print("  Clicking 'Check Status' button again...")
+        geo = run_cmd(f"xdotool getwindowgeometry --shell {job_wid[0]}")
+        jx, jy = 0, 0
+        for line in geo.stdout.strip().split('\n'):
+            if line.startswith('X='): jx = int(line.split('=')[1])
+            elif line.startswith('Y='): jy = int(line.split('=')[1])
+
+        check_btn_x = jx + 180
+        check_btn_y = jy + 25
+        run_cmd(f"xdotool mousemove --sync {check_btn_x} {check_btn_y}")
+        time.sleep(0.2)
+        run_cmd("xdotool click 1")
+        time.sleep(2)
+
+        take_screenshot(
+            "11_job_final_status",
+            "Shell Jobs after waiting 20 seconds and pressing 'Check Status' again. "
+            "The job should be completed, showing ping output in the HTML area."
+        )
+
+        print("  Description: After waiting 20 seconds, 'Check Status' was pressed.")
+        print("  The job status should now show one of:")
+        print("    - 'COMPLETED': The ping command finished successfully")
+        print("    - 'RUNNING': The job is still in progress (pings take ~15s total)")
+        print("  The HTML area should display the ping output showing")
+        print("  round-trip times for localhost ping packets.")
+    else:
+        print("  \u2717 Job Runner dialog not found")
+        take_screenshot("11_no_job_runner", "Job Runner dialog not found.")
+
+    # == STEP 9: Final Summary ==
+    print("\n" + "=" * 60)
+    print("STEP 9: Final Summary")
     print("=" * 60)
 
     windows = list_visible_windows()
@@ -394,7 +650,7 @@ def main():
     for wid, name in windows.items():
         print(f"    - '{name}'")
 
-    take_screenshot("08_final_summary", "Final desktop state with all open windows.")
+    take_screenshot("12_final_summary", "Final desktop state with all open windows.")
 
     print("\n  Screenshots captured:")
     if os.path.isdir(SCREENSHOTS_DIR):

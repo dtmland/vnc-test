@@ -10,7 +10,7 @@ NOVNC_PORT=6080
 RESOLUTION="1280x1024x24"
 
 # Ensure desktop automation tools are available
-for tool in xdotool wmctrl scrot vlc; do
+for tool in xdotool wmctrl scrot vlc git; do
     if ! command -v "$tool" &>/dev/null; then
         echo "Installing $tool..."
         if ! sudo apt-get install -y -qq "$tool" 2>/dev/null; then
@@ -18,6 +18,28 @@ for tool in xdotool wmctrl scrot vlc; do
         fi
     fi
 done
+
+# Install VLC Shell Jobs extension from https://github.com/dtmland/vlc-shell-jobs
+SHELL_JOBS_DIR="/tmp/vlc-shell-jobs"
+VLC_EXT_DIR="$HOME/.local/share/vlc/lua/extensions"
+VLC_MOD_DIR="$HOME/.local/share/vlc/lua/modules/extensions"
+
+if [ ! -f "$VLC_EXT_DIR/shell_jobs.lua" ]; then
+    echo "Installing VLC Shell Jobs extension..."
+    if [ ! -d "$SHELL_JOBS_DIR" ]; then
+        git clone https://github.com/dtmland/vlc-shell-jobs.git "$SHELL_JOBS_DIR" 2>/dev/null || true
+    fi
+    if [ -d "$SHELL_JOBS_DIR/lua" ]; then
+        mkdir -p "$VLC_EXT_DIR" "$VLC_MOD_DIR"
+        cp "$SHELL_JOBS_DIR/lua/extensions/shell_jobs.lua" "$VLC_EXT_DIR/"
+        for f in "$SHELL_JOBS_DIR"/lua/modules/extensions/*.lua; do
+            [ -f "$f" ] && cp "$f" "$VLC_MOD_DIR/"
+        done
+        echo "Shell Jobs extension installed"
+    else
+        echo "WARNING: Failed to clone vlc-shell-jobs repository"
+    fi
+fi
 
 # Function to cleanup on exit
 cleanup() {
